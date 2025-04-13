@@ -1,4 +1,5 @@
 requisitos.txt
+.vscode
 
 # Compiled Lua sources
 luac.out
