@@ -1,7 +1,0 @@
-Apresentação: 17/04
-Tópicos de Avaliação:
-    - Sobre a linguagem
-    - Por que da escolha dela
-    - Overview do projeto
-    - Explicação dos Requisitos Funcionais
-    - Explicação dos Casos de Uso
