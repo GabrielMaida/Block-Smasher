@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+
 function love.conf(t)
     t.window.title = 'Block Smasher'
     t.window.resizable = false
