@@ -1,15 +1,29 @@
 ---@diagnostic disable: undefined-global
 
+-- Carrega a biblioteca LOVE2D
 function love.load()
-    -- Inicializa variáveis do jogo
+    -- Configuração da bolinha
+    Ball = {
+        x = 0,
+        y = 0,
+        radius = 15,
+        speedX = 200,
+        speedY = -200
+    }
 end
 
+-- Atualiza a lógica do jogo
 function love.update(dt)
-    -- Atualiza a lógica do jogo
+    -- Atualiza a posição da bolinha
+    ball.x = ball.x + ball.speedX * dt
+    ball.y = ball.y + ball.speedY * dt
 end
 
+-- Desenha os elementos na tela
 function love.draw()
+    -- Armazena largura e altura da tela
     local largura, altura = love.graphics.getDimensions()
-    love.graphics.print("Resolução atual: " .. largura .. "x" .. altura, largura / 2, altura / 2)
-    love.graphics.print('Hello World!', 100, 100)
+
+    -- Desenha a bolinha
+    love.graphics.circle("fill", Ball.x + Ball.radius, Ball.y + Ball.radius, Ball.radius)
 end

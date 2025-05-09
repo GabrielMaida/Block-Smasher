@@ -2,7 +2,7 @@
 local function threadFunction()
     for i = 1, 5 do
         print("Executando na thread: " .. i)
-        os.execute("timeout 1") -- Pausa de 1 segundo (use "sleep 1" no Linux/macOS e "timeout 1" no Windows)
+        os.execute("timeout 1") -- Pausa de 1 segundo
     end
 end
 
