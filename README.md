@@ -8,32 +8,32 @@
 
 ## Índice
 
-- [Block Smasher - Lua/LÖVE](#block-smasher---lualöve)
-  - [Índice](#índice)
-  - [1. Conceito](#1-conceito)
-  - [2. Tecnologias/Referências](#2-tecnologiasreferências)
-  - [3. Como Executar](#3-como-executar)
-    - [LÖVE2D](#löve2d)
-    - [Lua](#lua)
-  - [4. Requisitos](#4-requisitos)
-    - [4.1 Requisitos Funcionais](#41-requisitos-funcionais)
-    - [4.2 Requisitos Não-Funcionais](#42-requisitos-não-funcionais)
-  - [5. Casos de Uso](#5-casos-de-uso)
-    - [Caso 1: Movimentação da Barra](#caso-1-movimentação-da-barra)
-    - [Caso 2: Lançamento da Bolinha](#caso-2-lançamento-da-bolinha)
-    - [Caso 3: Vitória do Jogador](#caso-3-vitória-do-jogador)
-    - [Caso 4: Sincronização de Bolinhas (Programação Distribuída)](#caso-4-sincronização-de-bolinhas-programação-distribuída)
-  - [6. Arquitetura e Fluxo do Sistema](#6-arquitetura-e-fluxo-do-sistema)
-    - [6.1. Menu Inicial](#61-menu-inicial)
-    - [6.2. Game Loop](#62-game-loop)
-    - [6.3. Módulo Distribuído](#63-módulo-distribuído)
-    - [6.4. Diagrama Resumido do Fluxo](#64-diagrama-resumido-do-fluxo)
-  - [7. Estrutura de Pastas](#7-estrutura-de-pastas)
-  - [8. Estrutura do Código](#8-estrutura-do-código)
-  - [9. Apresentações](#9-apresentações)
-    - [Avaliação N1](#avaliação-n1)
-    - [Avaliação N2](#avaliação-n2)
-    - [Avaliação N3](#avaliação-n3)
+-   [Block Smasher - Lua/LÖVE](#block-smasher---lualöve)
+    -   [Índice](#índice)
+    -   [1. Conceito](#1-conceito)
+    -   [2. Tecnologias/Referências](#2-tecnologiasreferências)
+    -   [3. Como Executar](#3-como-executar)
+        -   [LÖVE2D](#löve2d)
+        -   [Lua](#lua)
+    -   [4. Requisitos](#4-requisitos)
+        -   [4.1 Requisitos Funcionais](#41-requisitos-funcionais)
+        -   [4.2 Requisitos Não-Funcionais](#42-requisitos-não-funcionais)
+    -   [5. Casos de Uso](#5-casos-de-uso)
+        -   [Caso 1: Movimentação da Barra](#caso-1-movimentação-da-barra)
+        -   [Caso 2: Lançamento da Bolinha](#caso-2-lançamento-da-bolinha)
+        -   [Caso 3: Vitória do Jogador](#caso-3-vitória-do-jogador)
+        -   [Caso 4: Sincronização de Bolinhas (Programação Distribuída)](#caso-4-sincronização-de-bolinhas-programação-distribuída)
+    -   [6. Arquitetura e Fluxo do Sistema](#6-arquitetura-e-fluxo-do-sistema)
+        -   [6.1. Menu Inicial](#61-menu-inicial)
+        -   [6.2. Game Loop](#62-game-loop)
+        -   [6.3. Módulo Distribuído](#63-módulo-distribuído)
+        -   [6.4. Diagrama Resumido do Fluxo](#64-diagrama-resumido-do-fluxo)
+    -   [7. Estrutura de Pastas](#7-estrutura-de-pastas)
+    -   [8. Estrutura do Código](#8-estrutura-do-código)
+    -   [9. Apresentações](#9-apresentações)
+        -   [Avaliação N1](#avaliação-n1)
+        -   [Avaliação N2](#avaliação-n2)
+        -   [Avaliação N3](#avaliação-n3)
 
 ---
 
@@ -174,32 +174,32 @@ A arquitetura do **Block Smasher** está dividida em três módulos principais q
 ### 6.4. Diagrama Resumido do Fluxo
 
 ```
-                   +---------------------+
-                   |    Menu Inicial     |
-                   | (Arte de Fundo e UI)|
-                   +---------------------+
-                             |
-                    Clique para iniciar
-                             |
-                             v
-                   +---------------------+
-                   |   Estado de Jogo    |
-                   |  (Game Loop Ativo)  |
-                   +---------------------+
-                             |
-             +---------------+----------------+
-             |                                |
-       love.load()                      Inicializa variáveis
-             |                                |
-             v                                v
-       +------------+                  +-------------+
-       | love.update|<-----------------|Sincronização|-----> Outros processos
-       +------------+                  | Distribuída |
-             |                         +-------------+
-             v
-       +------------+
-       | love.draw  |
-       +------------+
+                           +---------------------+
+                           |    Menu Inicial     |
+                           | (Arte de Fundo e UI)|
+                           +---------------------+
+                                     |
+                            Clique para iniciar
+                                     |
+                                     v
+                           +---------------------+
+                           |   Estado de Jogo    |
+                           |  (Game Loop Ativo)  |
+                           +---------------------+
+                                     |
+                     +---------------+----------------+
+                     |                                |
+               love.load()                      Inicializa variáveis
+                     |                                |
+                     v                                v
+               +------------+                  +-------------+
+               | love.update|<-----------------|Sincronização|-----> Outros processos
+               +------------+                  | Distribuída |
+                     |                         +-------------+
+                     v
+               +------------+
+               | love.draw  |
+               +------------+
 ```
 
 ---
