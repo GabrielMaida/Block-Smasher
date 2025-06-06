@@ -66,7 +66,11 @@ love .
 Para rodar um arquivo Lua, utilize o seguinte comando:
 
 ```
-lua54 <arquivo>.lua
+lua <arquivo>.lua
+```
+ou
+```
+lua5.<versão> <arquivo>.lua
 ```
 
 > Obs: Substitua `<arquivo>` pelo nome do arquivo que deseja executar.
