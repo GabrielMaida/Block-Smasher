@@ -8,12 +8,16 @@ Game = {
     name = "Block Smasher",
     author = "Gabriel Antônio",
     state = "menu",
+    winorlose = nil,
     resetFont = function()
         love.graphics.setFont(love.graphics.newFont(12))
         love.graphics.setColor({255, 255, 255, 255})
     end,
     start = function()
+        Game.winorlose = nil
         GameOverMusic:stop()
+        VictoryMusic:stop()
+        VictoryVoice:stop()
         GameStartSound:setVolume(0.4)
         GameStartSound:play()
         Game.state = "game"
@@ -23,24 +27,35 @@ Game = {
         love.event.quit()
     end,
     gameover = function()
+        Game.winorlose = 0
         BackgroundMusic:stop()
         GameOverSound:setVolume(0.3)
         GameOverSound:play()
-        love.timer.sleep(2)
-        GameOverMusic:setVolume(0.2)
+        GameOverMusic:setVolume(0.15)
         GameOverMusic:play()
+        SetupPostGameMenuLayout()
+    end,
+    victory = function()
+        Game.winorlose = 1
+        BackgroundMusic:stop()
+        GameOverMusic:stop()
+        VictoryVoice:setVolume(0.3)
+        VictoryVoice:play()
+        VictoryMusic:setVolume(0.2)
+        VictoryMusic:play()
+        SetupPostGameMenuLayout()
     end,
     menu = function()
+        Game.winorlose = nil
         GameOverMusic:stop()
+        VictoryMusic:stop()
+        VictoryVoice:stop()
         BackgroundMusic:setVolume(0.15)
         BackgroundMusic:play()
         Game.state = "menu"
         SetupMenuLayout()
     end
 }
-
--- Gets the width and height dimensions
-local Width, Height = love.graphics.getDimensions()
 
 -- Loads background music
 BackgroundMusic = love.audio.newSource("assets/game_music.mp3", "static")
@@ -67,6 +82,7 @@ local BallCollisionSound
 local StartButtonX, StartButtonY, StartButtonWidth, StartButtonHeight = 0, 0, 0, 0
 local ExitButtonX, ExitButtonY, ExitButtonWidth, ExitButtonHeight = 0, 0, 0, 0
 local DefaultCursor, HandCursor
+local PlayAgainButton, MenuButton
 
 -- Variables for the floating animation of the CloudAsset in the menu
 local Cloud1X, Cloud2X -- The X positions
@@ -78,6 +94,10 @@ local MenuFloatOffset = 0 -- The vertical offset
 local MenuFloatSpeed = 2 -- Controls the floating speed
 local MenuFloatAmplitude = 5 -- Controls the maximum floating height in pixels
 
+-- Variables for timer
+local GameStartTimer = 0
+local IsGameStarting = false
+
 -- Variables for the game ball and bricks
 local BallGameAsset
 local BrickGameAsset
@@ -86,11 +106,11 @@ local BrickGameAsset
 local Bricks = {}
 
 -- Defines the bricks properties (constants)
-local BRICK_WIDTH = Width / 9 -- Width of each brick
-local BRICK_HEIGHT = 60 -- Height of each brick
-local BRICK_PADDING = Width / 9 / 5 -- Space between bricks
-local BRICK_OFFSET_TOP = Height / 10 -- Distance from the top of the screen
-local BRICK_OFFSET_LEFT = Width / 9 -- Distance from the left of the screen
+local BRICK_WIDTH -- Width of each brick
+local BRICK_HEIGHT -- Height of each brick
+local BRICK_PADDING -- Space between bricks
+local BRICK_OFFSET_TOP -- Distance from the top of the screen
+local BRICK_OFFSET_LEFT -- Distance from the left of the screen
 
 -- Defines the ball object
 Ball = {
@@ -107,7 +127,7 @@ Paddle = {
     y = 0,
     width = 100,
     height = 20,
-    speed = 400
+    speed = 500
 }
 
 
@@ -116,7 +136,17 @@ Paddle = {
 
 
 -- Main Love Load Function
-function love.load()    
+function love.load()
+    -- Gets the width and height dimensions
+    Width, Height = love.graphics.getDimensions()
+
+    -- Defines the bricks properties (constants)
+    BRICK_WIDTH = Width / 9
+    BRICK_HEIGHT = 60
+    BRICK_PADDING = BRICK_WIDTH / 5
+    BRICK_OFFSET_TOP = Height / 10
+    BRICK_OFFSET_LEFT = Width / 9
+
     -- Loads menu assets
     LogoImage = love.graphics.newImage("assets/logo.png")
     MenuBackground = love.graphics.newImage("assets/menu_background.png")
@@ -152,6 +182,9 @@ function love.load()
 
     -- Loads main game assets
     BallCollisionSound = love.audio.newSource("assets/ball_collision.wav", "static")
+    VictoryMusic = love.audio.newSource("assets/victory_music.mp3", "static")
+    VictoryVoice = love.audio.newSource("assets/victory_voice.mp3", "static")
+    MenuButton = love.graphics.newImage("assets/back_menu.png")
 
     -- Loads the game state
     if Game.state == "menu" then
@@ -196,12 +229,16 @@ function LoadGame()
     -- Defines the initial ball position
     Ball.x = Width / 2
     Ball.y = Height - Paddle.height - 30 - Ball.radius - 10
-    Ball.xspeed = 400
-    Ball.yspeed = -400
+    Ball.xspeed = 0
+    Ball.yspeed = 0
 
     -- Defines the initial paddle position
     Paddle.x = Width / 2 - Paddle.width / 2
     Paddle.y = Height - Paddle.height - 30
+
+    -- Sets the game start timer and flag
+    GameStartTimer = 3
+    IsGameStarting = true
 
     -- Initializes bricks
     Bricks = {}
@@ -221,6 +258,31 @@ function LoadGame()
     end
 end
 
+function SetupPostGameMenuLayout()
+    -- Button scale
+    local buttonScale = 0.35
+    local menuButtonSpecificScale = 0.13
+
+    -- Play Again Button
+    PlayAgainButton = StartButton
+    PlayAgainButtonWidth = PlayAgainButton:getWidth() * buttonScale
+    PlayAgainButtonHeight = PlayAgainButton:getHeight() * buttonScale
+    PlayAgainButtonX = Width / 2 - PlayAgainButtonWidth / 2
+    PlayAgainButtonY = Height * 0.5 - PlayAgainButtonHeight / 2
+
+    -- Back to Menu Button
+    MenuButtonWidth = MenuButton:getWidth() * menuButtonSpecificScale
+    MenuButtonHeight = MenuButton:getHeight() * menuButtonSpecificScale
+    MenuButtonX = Width / 2 - MenuButtonWidth / 2
+    MenuButtonY = Height * 0.65 - MenuButtonHeight / 2
+
+    -- Exit Game Button
+    ExitButtonWidth = ExitButton:getWidth() * buttonScale
+    ExitButtonHeight = ExitButton:getHeight() * buttonScale
+    ExitButtonX = Width / 2 - ExitButtonWidth / 2
+    ExitButtonY = Height * 0.8 - ExitButtonHeight / 2
+end
+
 
 -------------------------------------------------------------------
 -- Update Section
@@ -233,10 +295,21 @@ function love.update(dt)
         UpdateMenu(dt)
     -- If game state is "game"
     elseif Game.state == "game" then
-        UpdateGame(dt)
+        -- Se o jogo NÃO estiver em status de vitória/derrota (Game.winorlose == nil), atualiza o jogo.
+        if Game.winorlose == nil then
+            UpdateGame(dt)
+        else
+            -- Se o jogo está em status de vitória/derrota, apenas atualiza o cursor para os botões pós-jogo
+            if IsMouseOver(PlayAgainButtonX, PlayAgainButtonY, PlayAgainButtonWidth, PlayAgainButtonHeight) or
+               IsMouseOver(MenuButtonX, MenuButtonY, MenuButtonWidth, MenuButtonHeight) or
+               IsMouseOver(ExitButtonX, ExitButtonY, ExitButtonWidth, ExitButtonHeight) then
+                love.mouse.setCursor(HandCursor)
+            else
+                love.mouse.setCursor(DefaultCursor)
+            end
+        end
     end
 end
-
 -- Function to update the game menu
 function UpdateMenu(dt)
     -- Cloud movement (CloudAsset1)
@@ -271,13 +344,12 @@ end
 
 -- Function to update the game itself
 function UpdateGame(dt)
-    -- Handles horizontal ball movement
-    Ball.x = Ball.x + Ball.xspeed * dt
+    -- Provisory key to test victory
+    if love.keyboard.isDown('w') then
+        Game.victory()
+    end
 
-    -- Handles vertical ball movement
-    Ball.y = Ball.y + Ball.yspeed * dt
-
-    -- Handles paddle movement
+    -- Handles paddle movement (always active)
     if love.keyboard.isDown('left') or love.keyboard.isDown('a') then
         Paddle.x = Paddle.x - Paddle.speed * dt
     elseif love.keyboard.isDown('right') or love.keyboard.isDown('d') then
@@ -294,173 +366,204 @@ function UpdateGame(dt)
         Paddle.x = Width - Paddle.width
     end
 
-    -- Right Edge Collision
-    if Ball.x + Ball.radius > Width then
-        -- Reverses the ball's X speed to move left
-        Ball.xspeed = -Ball.xspeed
-        -- Repositions to prevent the ball from sticking
-        Ball.x = Width - Ball.radius - 1
+    -- Game start timer logic
+    if IsGameStarting then
+        GameStartTimer = GameStartTimer - dt -- Decrement the timer
+        if GameStartTimer <= 0 then
+            IsGameStarting = false -- Countdown finished
+            GameStartTimer = 0 -- Ensures it doesn't go negative
+            -- Start ball movement
+            Ball.xspeed = 300 -- Initial X speed
+            Ball.yspeed = -300 -- Initial Y speed (upwards)
+        end
+    else
+        -- Only move the ball and process collisions if the countdown is NOT active
+        -- Handles horizontal ball movement
+        Ball.x = Ball.x + Ball.xspeed * dt
 
-        -- Plays the collision sound
-        BallCollisionSound:play()
-    end
+        -- Handles vertical ball movement
+        Ball.y = Ball.y + Ball.yspeed * dt
 
-    -- Left Edge Collision
-    if Ball.x - Ball.radius < 0 then
-        -- Reverses the ball's X speed to move right
-        Ball.xspeed = -Ball.xspeed
-        -- Repositions to prevent the ball from sticking
-        Ball.x = Ball.radius + 1
+        -- Right Edge Collision
+        if Ball.x + Ball.radius > Width then
+            -- Reverses the ball's X speed to move left
+            Ball.xspeed = -Ball.xspeed
+            -- Repositions to prevent the ball from sticking
+            Ball.x = Width - Ball.radius - 1
 
-        -- Plays the collision sound
-        BallCollisionSound:play()
-    end
-
-    -- Top Edge Collision
-    if Ball.y - Ball.radius < 0 then
-        -- Reverses the ball's Y speed to move down
-        Ball.yspeed = -Ball.yspeed
-        -- Repositions to prevent the ball from sticking
-        Ball.y = Ball.radius + 1
-
-        -- Plays the collision sound
-        BallCollisionSound:play()
-    end
-
-    -- Bottom Edge Collision
-    -- If the ball passes the paddle, it's a "game over" condition
-    if Ball.y + Ball.radius > Height then
-        
-        -- Stops the ball
-        Ball.xspeed = 0
-        Ball.yspeed = 0
-        Ball.x = Width / 2
-        Ball.y = Height / 2
-
-        Game.gameover()
-    end
-
-    -- Ball-Paddle Collision
-    -- Check for overlap between ball and paddle
-    if Ball.x + Ball.radius >= Paddle.x and
-       Ball.x - Ball.radius <= Paddle.x + Paddle.width and
-       Ball.y + Ball.radius >= Paddle.y and
-       Ball.y - Ball.radius <= Paddle.y + Paddle.height then
-
-        -- Determine the previous position of the ball
-        -- This determine which side the collision occurred from
-        local prevBallX = Ball.x - (Ball.xspeed * dt)
-        local prevBallY = Ball.y - (Ball.yspeed * dt)
-
-        -- Collision from Top of Paddle
-        -- If the ball was above the paddle in the previous frame and is now overlapping
-        if prevBallY + Ball.radius <= Paddle.y then
-            Ball.yspeed = -Ball.yspeed -- Inverts the Y speed
-            Ball.y = Paddle.y - Ball.radius -- Positions the ball at the top of the paddle
-
-            -- Logic to vary the bounce angle at the top
-            local hitPoint = (Ball.x - Paddle.x) / Paddle.width
-            local maxBounceAngleFactor = 0.8
-            Ball.xspeed = Ball.xspeed + (hitPoint - 0.5) * Paddle.speed * maxBounceAngleFactor
-
-            -- Keep the total speed (magnitude) constant
-            local currentSpeedMagnitude = math.sqrt(Ball.xspeed^2 + Ball.yspeed^2)
-            local desiredSpeedMagnitude = 600
-            if currentSpeedMagnitude ~= 0 then
-                local scaleFactor = desiredSpeedMagnitude / currentSpeedMagnitude
-                Ball.xspeed = Ball.xspeed * scaleFactor
-                Ball.yspeed = Ball.yspeed * scaleFactor
-            end
-
+            -- Plays the collision sound
             BallCollisionSound:play()
         end
 
-        -- Collision from Left Side of Paddle
-        -- If the ball was to the left of the paddle previously and now overlaps AND is moving right
-        if prevBallX + Ball.radius <= Paddle.x and Ball.xspeed > 0 then
-            Ball.xspeed = -Ball.xspeed -- Inverts the X speed
-            Ball.x = Paddle.x - Ball.radius -- Positions the ball at the left of the paddle
+        -- Left Edge Collision
+        if Ball.x - Ball.radius < 0 then
+            -- Reverses the ball's X speed to move right
+            Ball.xspeed = -Ball.xspeed
+            -- Repositions to prevent the ball from sticking
+            Ball.x = Ball.radius + 1
+
+            -- Plays the collision sound
             BallCollisionSound:play()
         end
 
-        -- Collision from Right Side of Paddle
-        -- If the ball was to the right of the paddle previously and now overlaps AND is moving left
-        if prevBallX - Ball.radius >= Paddle.x + Paddle.width and Ball.xspeed < 0 then
-            Ball.xspeed = -Ball.xspeed -- Inverts the X speed
-            Ball.x = (Paddle.x + Paddle.width) + Ball.radius -- Positions the ball at the right of the paddle
+        -- Top Edge Collision
+        if Ball.y - Ball.radius < 0 then
+            -- Reverses the ball's Y speed to move down
+            Ball.yspeed = -Ball.yspeed
+            -- Repositions to prevent the ball from sticking
+            Ball.y = Ball.radius + 1
+
+            -- Plays the collision sound
             BallCollisionSound:play()
         end
-    end
 
-    -- Ball-Brick Collision
-    -- Iterates through all bricks to check for collision
-    for i, brick in ipairs(Bricks) do
-        if brick.isAlive then -- Only check collision with alive bricks
-            -- Check for overlap between ball and brick (AABB collision)
-            if Ball.x + Ball.radius >= brick.x and
-               Ball.x - Ball.radius <= brick.x + brick.width and
-               Ball.y + Ball.radius >= brick.y and
-               Ball.y - Ball.radius <= brick.y + brick.height then
+        -- Bottom Edge Collision
+        -- If the ball passes the paddle, it's a "game over" condition
+        if Ball.y + Ball.radius > Height then
+            
+            -- Stops the ball (this might be handled better in Game.gameover() itself, but fine for now)
+            Ball.xspeed = 0
+            Ball.yspeed = 0
+            -- Note: Setting Ball.x and Ball.y here might cause a visual jump if Game.gameover() also resets it
+            Ball.x = Width / 2
+            Ball.y = Height / 2
 
-                -- Determine the previous position of the ball
-                local prevBallX = Ball.x - (Ball.xspeed * dt)
-                local prevBallY = Ball.y - (Ball.yspeed * dt)
+            Game.gameover()
+        end
 
-                -- Destroy the brick
-                brick.isAlive = false
-                BallCollisionSound:play() -- Play sound when brick is hit
+        -- Ball-Paddle Collision
+        -- Check for overlap between ball and paddle
+        if Ball.x + Ball.radius >= Paddle.x and
+           Ball.x - Ball.radius <= Paddle.x + Paddle.width and
+           Ball.y + Ball.radius >= Paddle.y and
+           Ball.y - Ball.radius <= Paddle.y + Paddle.height then
 
-                -- Determine which side the collision occurred from to invert the correct axis
-                local collided = false
+            -- Determine the previous position of the ball
+            -- This determine which side the collision occurred from
+            local prevBallX = Ball.x - (Ball.xspeed * dt)
+            local prevBallY = Ball.y - (Ball.yspeed * dt)
 
-                -- Collision from Top of Brick
-                if prevBallY + Ball.radius <= brick.y then
-                    Ball.yspeed = -Ball.yspeed
-                    Ball.y = brick.y - Ball.radius -- Reposition to prevent sticking
-                    collided = true
-                end
+            -- Collision from Top of Paddle
+            -- If the ball was above the paddle in the previous frame and is now overlapping
+            if prevBallY + Ball.radius <= Paddle.y then
+                Ball.yspeed = -Ball.yspeed -- Inverts the Y speed
+                Ball.y = Paddle.y - Ball.radius -- Positions the ball at the top of the paddle
 
-                -- Collision from Bottom of Brick
-                if not collided and prevBallY - Ball.radius >= brick.y + brick.height then
-                    Ball.yspeed = -Ball.yspeed
-                    Ball.y = (brick.y + brick.height) + Ball.radius
-                    collided = true
-                end
+                -- Logic to vary the bounce angle at the top
+                local hitPoint = (Ball.x - Paddle.x) / Paddle.width
+                local maxBounceAngleFactor = 0.8
+                Ball.xspeed = Ball.xspeed + (hitPoint - 0.5) * Paddle.speed * maxBounceAngleFactor
 
-                -- Collision from Left Side of Brick
-                if not collided and prevBallX + Ball.radius <= brick.x then
-                    Ball.xspeed = -Ball.xspeed
-                    Ball.x = brick.x - Ball.radius
-                    collided = true
-                end
-
-                -- Collision from Right Side of Brick
-                if not collided and prevBallX - Ball.radius >= brick.x + brick.width then
-                    Ball.xspeed = -Ball.xspeed
-                    Ball.x = (brick.x + brick.width) + Ball.radius
-                    collided = true
-                end
-
-                -- If the ball somehow hit a corner and didn't trigger an axis specific collision,
-                -- or for simplicity, you could just invert Y if no other side was hit.
-                if not collided then
-                    Ball.yspeed = -Ball.yspeed
-                    -- Ball.xspeed = -Ball.xspeed -- Opcional: inverter X também para quiques de canto mais fortes
-                end
-
-                -- Optional: Maintain total speed magnitude after collision
+                -- Keep the total speed (magnitude) constant
                 local currentSpeedMagnitude = math.sqrt(Ball.xspeed^2 + Ball.yspeed^2)
-                local desiredSpeedMagnitude = 600 -- Mantenha consistente com o paddle
+                local desiredSpeedMagnitude = 450 -- Use 450 como definido para o jogo
                 if currentSpeedMagnitude ~= 0 then
                     local scaleFactor = desiredSpeedMagnitude / currentSpeedMagnitude
                     Ball.xspeed = Ball.xspeed * scaleFactor
                     Ball.yspeed = Ball.yspeed * scaleFactor
                 end
 
-                -- Only collide with one brick per frame to prevent weird multi-hit behavior
-                break
+                BallCollisionSound:play()
+            end
+
+            -- Collision from Left Side of Paddle
+            -- If the ball was to the left of the paddle previously and now overlaps AND is moving right
+            if prevBallX + Ball.radius <= Paddle.x and Ball.xspeed > 0 then
+                Ball.xspeed = -Ball.xspeed -- Inverts the X speed
+                Ball.x = Paddle.x - Ball.radius -- Positions the ball at the left of the paddle
+                BallCollisionSound:play()
+            end
+
+            -- Collision from Right Side of Paddle
+            -- If the ball was to the right of the paddle previously and now overlaps AND is moving left
+            if prevBallX - Ball.radius >= Paddle.x + Paddle.width and Ball.xspeed < 0 then
+                Ball.xspeed = -Ball.xspeed -- Inverts the X speed
+                Ball.x = (Paddle.x + Paddle.width) + Ball.radius -- Positions the ball at the right of the paddle
+                BallCollisionSound:play()
             end
         end
+
+        -- Ball-Brick Collision
+        -- Iterates through all bricks to check for collision
+        for i, brick in ipairs(Bricks) do
+            if brick.isAlive then -- Only check collision with alive bricks
+                -- Check for overlap between ball and brick (AABB collision)
+                if Ball.x + Ball.radius >= brick.x and
+                   Ball.x - Ball.radius <= brick.x + brick.width and
+                   Ball.y + Ball.radius >= brick.y and
+                   Ball.y - Ball.radius <= brick.y + brick.height then
+
+                    -- Determine the previous position of the ball
+                    local prevBallX = Ball.x - (Ball.xspeed * dt)
+                    local prevBallY = Ball.y - (Ball.yspeed * dt)
+
+                    -- Destroy the brick
+                    brick.isAlive = false
+                    BallCollisionSound:play() -- Play sound when brick is hit
+
+                    -- Determine which side the collision occurred from to invert the correct axis
+                    local collided = false
+
+                    -- Collision from Top of Brick
+                    if prevBallY + Ball.radius <= brick.y then
+                        Ball.yspeed = -Ball.yspeed
+                        Ball.y = brick.y - Ball.radius -- Reposition to prevent sticking
+                        collided = true
+                    end
+
+                    -- Collision from Bottom of Brick
+                    if not collided and prevBallY - Ball.radius >= brick.y + brick.height then
+                        Ball.yspeed = -Ball.yspeed
+                        Ball.y = (brick.y + brick.height) + Ball.radius
+                        collided = true
+                    end
+
+                    -- Collision from Left Side of Brick
+                    if not collided and prevBallX + Ball.radius <= brick.x then
+                        Ball.xspeed = -Ball.xspeed
+                        Ball.x = brick.x - Ball.radius
+                        collided = true
+                    end
+
+                    -- Collision from Right Side of Brick
+                    if not collided and prevBallX - Ball.radius >= brick.x + brick.width then
+                        Ball.xspeed = -Ball.xspeed
+                        Ball.x = (brick.x + brick.width) + Ball.radius
+                        collided = true
+                    end
+
+                    -- If the ball somehow hit a corner and didn't trigger an axis specific collision,
+                    -- it inverts Y if no other side was hit.
+                    if not collided then
+                        Ball.yspeed = -Ball.yspeed
+                    end
+
+                    -- Adjusts the ball speed to maintain a constant magnitude
+                    local currentSpeedMagnitude = math.sqrt(Ball.xspeed^2 + Ball.yspeed^2)
+                    local desiredSpeedMagnitude = 450
+                    if currentSpeedMagnitude ~= 0 then
+                        local scaleFactor = desiredSpeedMagnitude / currentSpeedMagnitude
+                        Ball.xspeed = Ball.xspeed * scaleFactor
+                        Ball.yspeed = Ball.yspeed * scaleFactor
+                    end
+
+                    -- Only collide with one brick per frame to prevent weird multi-hit behavior
+                    break
+                end
+            end
+        end
+    end
+
+    local aliveBricksCount = 0
+    for i, brick in ipairs(Bricks) do
+        if brick.isAlive then
+            aliveBricksCount = aliveBricksCount + 1
+        end
+    end
+
+    if aliveBricksCount == 0 then
+        Game.victory()
+        return
     end
 end
 
@@ -571,10 +674,10 @@ function DrawMenu()
         -- Defines the position for the exit button image
         local exitButtonX = Width / 2
         local exitButtonY = Height * 0.75
-        
+
         -- Defines the scale for the exit button image
         local exitButtonScale = 0.35
-        
+
         -- Draws the exit button image scaled to fit the window, centered
         love.graphics.draw(ExitButton, exitButtonX, exitButtonY, 0, exitButtonScale, exitButtonScale, ExitButton:getWidth() / 2, ExitButton:getHeight() / 2)
     end
@@ -591,7 +694,7 @@ function DrawGame()
         -- Calculates the scale for the background image
         local gameBackgroundScaleX = Width / GameBackground:getWidth()
         local gameBackgroundScaleY = Height / GameBackground:getHeight()
-        
+
         -- Draws the background image scaled to fit the window
         love.graphics.draw(GameBackground, 0, 0, 0, gameBackgroundScaleX, gameBackgroundScaleY)
     end
@@ -600,16 +703,16 @@ function DrawGame()
     for i, brick in ipairs(Bricks) do
         if brick.isAlive then
             love.graphics.draw(BrickGameAsset, brick.x, brick.y, 0, brick.width / BrickGameAsset:getWidth(), brick.height / BrickGameAsset:getHeight())
-            -- A escala é calculada aqui para ajustar a imagem ao tamanho definido do tijolo.
-            -- Se seu BrickGameAsset já tem as dimensões certas, use uma escala fixa (ex: 1)
-            -- Ou se quiser centralizar, adicione os offsets: BrickGameAsset:getWidth() / 2, BrickGameAsset:getHeight() / 2
+            -- The scale is calculated here to adjust the image to the size defined of the brick.
+            -- If your BrickGameAsset already has the correct dimensions, use a fixed scale (ex: 1)
+            -- Or if you want to center it, add the offsets: BrickGameAsset:getWidth() / 2, BrickGameAsset:getHeight() / 2
         end
     end
 
     -- Checks if there is a paddle image loaded
     if Paddle then
         -- Draw the paddle
-        love.graphics.rectangle("line", Paddle.x, Paddle.y, Paddle.width, Paddle.height)
+        love.graphics.rectangle("fill", Paddle.x, Paddle.y, Paddle.width, Paddle.height)
     end
 
     -- Checks if there is a ball image loaded
@@ -620,7 +723,7 @@ function DrawGame()
         local angle = math.atan2(Ball.yspeed, Ball.xspeed) + math.pi / 2
 
         -- Calculates the scale for the ball image
-        local ballGameScale = 0.1
+        local ballGameScale = 0.08
 
         -- Draws the ball image scaled to fit the window, centered
         love.graphics.draw(BallGameAsset, Ball.x, Ball.y, angle + 90, ballGameScale, ballGameScale, BallGameAsset:getWidth() / 2, BallGameAsset:getHeight() / 2)
@@ -628,13 +731,53 @@ function DrawGame()
 
     -- Displaying messages
     love.graphics.print(Game.name, 10, 10)
-    love.graphics.print("Bricks Alive: " .. #Bricks, 140, 10) -- Exemplo de info de debug
 
     -- Show statistics in real time
     love.graphics.print("Ball.X: " .. tostring(string.format("%.5f", Ball.x)), 10, 30)
     love.graphics.print("Ball.Y: " .. tostring(string.format("%.5f", Ball.y)), 140, 30)
     love.graphics.print("Paddle.X: " .. tostring(string.format("%.5f", Paddle.x)), 270, 30)
     love.graphics.print("Paddle.Y: " .. tostring(string.format("%.5f", Paddle.y)), 420, 30)
+
+    -- Draws the game start timer
+    if IsGameStarting then
+        love.graphics.setFont(love.graphics.newFont(100))
+        love.graphics.setColor(0, 0, 0, 1)
+        local timerText = tostring(math.ceil(GameStartTimer))
+        local textWidth = love.graphics.getFont():getWidth(timerText)
+        love.graphics.print(timerText, (Width - textWidth) / 2, Height / 2 + 75)
+        Game.resetFont()
+    end
+
+    -- AQUI: A lógica para Game Over / Victory deve vir DEPOIS de desenhar o jogo normal
+    -- e ser condicionada por Game.winorlose
+    if Game.winorlose ~= nil then -- Se Game.winorlose não é nil (ou seja, é 0 ou 1)
+        -- Desenha um overlay semitransparente para escurecer a tela
+        love.graphics.setColor(0, 0, 0, 0.7) -- Preto com 70% de opacidade
+        love.graphics.rectangle("fill", 0, 0, Width, Height)
+
+        -- Voltar a cor para branco ANTES de desenhar os textos e botões
+        love.graphics.setColor(1, 1, 1, 1)
+
+        -- Desenha o texto "Victory" ou "Game Over!"
+        love.graphics.setFont(love.graphics.newFont(70))
+        local textToDisplay = ""
+        if Game.winorlose == 1 then
+            textToDisplay = "Victory!"
+        else -- Game.winorlose == 0
+            textToDisplay = "Game Over!"
+        end
+        local textWidth = love.graphics.getFont():getWidth(textToDisplay)
+        love.graphics.print(textToDisplay, (Width - textWidth) / 2, Height * 0.25)
+        Game.resetFont()
+
+        -- Desenha os botões Play Again, Back to Menu, Exit Game
+        -- Play Again
+        love.graphics.draw(PlayAgainButton, PlayAgainButtonX, PlayAgainButtonY, 0, PlayAgainButtonWidth / PlayAgainButton:getWidth(), PlayAgainButtonHeight / PlayAgainButton:getHeight())
+        -- Back to Menu
+        love.graphics.draw(MenuButton, MenuButtonX, MenuButtonY, 0, MenuButtonWidth / MenuButton:getWidth(), MenuButtonHeight / MenuButton:getHeight())
+        -- Exit Game
+        love.graphics.draw(ExitButton, ExitButtonX, ExitButtonY, 0, ExitButtonWidth / ExitButton:getWidth(), ExitButtonHeight / ExitButton:getHeight())
+    end
 end
 
 
@@ -662,6 +805,21 @@ function love.mousepressed(x, y, button)
             if IsMouseOver(StartButtonX, StartButtonY, StartButtonWidth, StartButtonHeight) then
                 Game.start()
             -- If the click was over the Exit button
+            elseif IsMouseOver(ExitButtonX, ExitButtonY, ExitButtonWidth, ExitButtonHeight) then
+                Game.exit()
+            end
+        end
+    -- If the game state is "game" AND the game has ended (win or lose)
+    elseif Game.state == "game" and Game.winorlose ~= nil then -- Condição ajustada aqui
+        -- If the left mouse button was pressed (button == 1)
+        if button == 1 then
+            -- Play Again button
+            if IsMouseOver(PlayAgainButtonX, PlayAgainButtonY, PlayAgainButtonWidth, PlayAgainButtonHeight) then
+                Game.start()
+            -- Back to Menu button
+            elseif IsMouseOver(MenuButtonX, MenuButtonY, MenuButtonWidth, MenuButtonHeight) then
+                Game.menu()
+            -- Exit Game button
             elseif IsMouseOver(ExitButtonX, ExitButtonY, ExitButtonWidth, ExitButtonHeight) then
                 Game.exit()
             end

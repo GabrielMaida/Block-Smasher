@@ -1,6 +1,8 @@
-# Block Smasher - Lua/LÖVE
+# Block Smasher
 
-**ADS41 - Gabriel Antônio Maida, Leonardo Peron Krause, Pedro Henrique Sardá, Luis Felipe Barbosa, Bhernardo Ramos Vieira**
+Um jogo de quebra-tijolos feito em **Lua** com o framework **LÖVE**.
+
+**Desenvolvido por:** Gabriel Antônio Maida, Leonardo Peron Krause, Pedro Henrique Sardá, Luis Felipe Barbosa, Bhernardo Ramos Vieira.
 
 **_UNICESUSC - 2025_**
 
@@ -8,111 +10,84 @@
 
 ## Índice
 
--   [Block Smasher - Lua/LÖVE](#block-smasher---lualöve)
-    -   [Índice](#índice)
-    -   [1. Conceito](#1-conceito)
-    -   [2. Tecnologias/Referências](#2-tecnologiasreferências)
-    -   [3. Como Executar](#3-como-executar)
-        -   [LÖVE2D](#löve2d)
-        -   [Lua](#lua)
-    -   [4. Requisitos](#4-requisitos)
-        -   [4.1 Requisitos Funcionais](#41-requisitos-funcionais)
-        -   [4.2 Requisitos Não-Funcionais](#42-requisitos-não-funcionais)
-    -   [5. Casos de Uso](#5-casos-de-uso)
-        -   [Caso 1: Movimentação da Barra](#caso-1-movimentação-da-barra)
-        -   [Caso 2: Lançamento da Bolinha](#caso-2-lançamento-da-bolinha)
-        -   [Caso 3: Vitória do Jogador](#caso-3-vitória-do-jogador)
-        -   [Caso 4: Sincronização de Bolinhas (Programação Distribuída)](#caso-4-sincronização-de-bolinhas-programação-distribuída)
-    -   [6. Arquitetura e Fluxo do Sistema](#6-arquitetura-e-fluxo-do-sistema)
-        -   [6.1. Menu Inicial](#61-menu-inicial)
-        -   [6.2. Game Loop](#62-game-loop)
-        -   [6.3. Módulo Distribuído](#63-módulo-distribuído)
-        -   [6.4. Diagrama Resumido do Fluxo](#64-diagrama-resumido-do-fluxo)
-    -   [7. Estrutura de Pastas](#7-estrutura-de-pastas)
-    -   [8. Estrutura do Código](#8-estrutura-do-código)
-    -   [9. Apresentações](#9-apresentações)
-        -   [Avaliação N1](#avaliação-n1)
-        -   [Avaliação N2](#avaliação-n2)
-        -   [Avaliação N3](#avaliação-n3)
+- [1. Conceito](#1-conceito)
+- [2. Tecnologias](#2-tecnologias)
+- [3. Como Executar](#3-como-executar)
+- [4. Requisitos](#4-requisitos)
+- [5. Casos de Uso](#5-casos-de-uso)
+- [6. Estrutura de Pastas](#6-estrutura-de-pastas)
+- [7. Estrutura do Código](#7-estrutura-do-código)
+- [8. Game Loop](#8-game-loop)
+- [9. Apresentações](#9-apresentações)
 
 ---
 
 ## 1. Conceito
 
-O **Block Smasher** é um jogo arcade desenvolvido em Lua com o framework LÖVE, inspirado no clássico "Quebra-Tijolos", que integra conceitos de **programação distribuída** e **paralelismo**, permitindo que diferentes partes do sistema funcionem de forma coordenada, mesmo em processos distintos ou locais diferentes, e possibilitando a execução simultânea de múltiplas instâncias de elementos do jogo, como objetos ou entidades independentes, tornando a experiência mais dinâmica.
+O **Block Smasher** é uma releitura do clássico jogo de quebra-tijolos, desenvolvido com foco em criar uma experiência arcade divertida e visualmente agradável. O jogador controla uma barra na parte inferior da tela para rebater uma bolinha e destruir todos os blocos na parte superior.
 
 ---
 
-## 2. Tecnologias/Referências
+## 2. Tecnologias
 
--   **Linguagem de Programação:** [Lua](https://www.lua.org/)
--   **Framework:** [LÖVE](https://www.love2d.org/)
--   **Conceito de Programação Distribuída:** [Referência para estudo](https://dev.to/daviducolo/distributed-programming-from-basics-to-advanced-concepts-5h66)
+-   **Linguagem:** [Lua](https://www.lua.org/)
+-   **Framework:** [LÖVE](https://love2d.org/)
 
 ---
 
 ## 3. Como Executar
 
-### LÖVE2D
+### Requisitos
 
-Para rodar o projeto com LÖVE2D, basta executar o seguinte comando na raiz do projeto:
+-   [LÖVE](https://love2d.org/) (versão 11.5 ou superior)
+-   [Lua](https://www.lua.org/)
 
-```
-love .
-```
+### Passos
 
-### Lua
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/GabrielMaida/Block-Smasher
+    cd Block-Smasher
+    ```
 
-Para rodar um arquivo Lua, utilize o seguinte comando:
-
-```
-lua <arquivo>.lua
-```
-ou
-```
-lua5.<versão> <arquivo>.lua
-```
-
-> Obs: Substitua `<arquivo>` pelo nome do arquivo que deseja executar.
+2.  **Execute o jogo:**
+    Com o LÖVE instalado, basta executar o seguinte comando na raiz do projeto:
+    ```bash
+    love .
+    ```
 
 ---
 
 ## 4. Requisitos
 
-Os requisitos do projeto estão divididos em funcionais e não-funcionais, detalhando as principais funcionalidades esperadas do jogo e as características de qualidade que devem ser atendidas. Estes requisitos servem como base para o desenvolvimento.
+Os requisitos do projeto estão divididos em funcionais e não-funcionais, detalhando as principais funcionalidades esperadas do jogo.
 
 ### 4.1 Requisitos Funcionais
 
-1. **Movimentação da Barra:**  
-   Permite que o jogador mova a barra horizontalmente (usando as setas do teclado) para interceptar a(s) bolinha(s).
+1.  **Movimentação da Barra:**
+    Permite que o jogador mova a barra horizontalmente (usando as setas do teclado `←`/`→` ou `A`/`D`) para interceptar a bolinha.
 
-2. **Lançamento da Bolinha:**  
-   Ao pressionar a tecla espaço, a bolinha é lançada em um ângulo inicial (evitando movimento linear), direcionada para os blocos.
+2.  **Lançamento da Bolinha:**
+    Após um temporizador de início (3 segundos), a bolinha é lançada em um ângulo inicial, direcionada para os blocos.
 
-3. **Múltiplas Bolinhas Ativas:**  
-   Possibilidade de ter mais de uma bolinha simultaneamente em jogo, reforçando o aspecto da programação distribuída.
+3.  **Colisão da Bolinha:**
+    A bolinha deve ricochetear ao colidir com a barra, as paredes ou os blocos.
 
-4. **Colisão da Bolinha:**  
-   As bolinhas devem ricochetear ao colidir com a barra, as paredes ou os blocos.
+4.  **Destruição de Blocos:**
+    Quando uma bolinha atinge um bloco, este é destruído.
 
-5. **Destruição de Blocos e Pontuação:**  
-   Quando uma bolinha atinge um bloco, este é destruído e o jogador ganha pontos. A pontuação é exibida dinamicamente em tempo real, sem ser armazenada após o término da partida.
+5.  **Condição de Vitória e Derrota:**
+    O jogo termina e exibe uma mensagem de vitória ("Victory!") quando todos os blocos são destruídos, ou uma mensagem de derrota ("Game Over!") se a bolinha ultrapassar a barra.
 
-6. **Condição de Vitória:**  
-   O jogo termina e exibe uma mensagem de vitória quando todos os blocos são destruídos.
-
-7. **Sincronização entre Bolinhas:**  
-   O estado (posição, direção, velocidade) das bolinhas deve ser compartilhado entre processos ou dispositivos conectados, garantindo uma experiência consistente em tempo real.
-
-8. **Menu de Início:**  
-   O jogo deve apresentar um menu inicial com arte de fundo, servindo como porta de entrada para o início da partida.
+6.  **Menu de Início:**
+    O jogo deve apresentar um menu inicial com botões interativos ("Start Game", "Exit Game").
 
 ### 4.2 Requisitos Não-Funcionais
 
 -   **Desempenho:** O jogo deve rodar de maneira fluida e com tempo de resposta rápido.
--   **Modularidade:** O código deve ser modular para suportar facilmente novas implementações e escalabilidade.
--   **Usabilidade:** A interface deve ser simples e intuitiva, sem a necessidade de instruções complexas.
--   **Clareza do Código:** O código deve seguir boas práticas de programação, incluindo comentários e organização lógica, para facilitar a manutenção e futuras colaborações.
+-   **Modularidade:** O código deve ser modular para suportar facilmente novas implementações.
+-   **Usabilidade:** A interface deve ser simples e intuitiva, com feedback visual e sonoro.
+-   **Clareza do Código:** O código deve seguir boas práticas de programação para facilitar a manutenção.
 
 ---
 
@@ -121,151 +96,86 @@ Os requisitos do projeto estão divididos em funcionais e não-funcionais, detal
 ### Caso 1: Movimentação da Barra
 
 -   **Ator:** Jogador
--   **Descrição:** O jogador move a barra horizontalmente utilizando as setas do teclado. A barra se posiciona de acordo com a direção do movimento, permitindo interceptar a bolinha.
+-   **Descrição:** O jogador move a barra horizontalmente utilizando as setas do teclado (`←`/`→`) ou as teclas (`A`/`D`) para interceptar a bolinha.
 
 ### Caso 2: Lançamento da Bolinha
 
+-   **Ator:** Sistema
+-   **Descrição:** Após o temporizador de 3 segundos, a bolinha é automaticamente lançada em um ângulo inicial.
+
+### Caso 3: Vitória/Derrota do Jogador
+
 -   **Ator:** Jogador
--   **Descrição:** Após posicionar a barra, o jogador pressiona a tecla espaço, lançando a bolinha em um ângulo que a direciona para os blocos.
-
-### Caso 3: Vitória do Jogador
-
--   **Ator:** Jogador
--   **Descrição:** Ao destruir todos os blocos, o jogo exibe uma mensagem de vitória e encerra a partida, oferecendo ao jogador a opção de reiniciar.
-
-### Caso 4: Sincronização de Bolinhas (Programação Distribuída)
-
--   **Ator:** Servidor e Clientes
--   **Descrição:** Ao lançar ou atualizar o estado de uma bolinha, os dados são compartilhados entre os processos ou dispositivos conectados, mantendo a consistência do jogo em tempo real.
+-   **Descrição:** Ao destruir todos os blocos, o jogo exibe uma mensagem de "Victory!". Se a bolinha sair da tela por baixo, o jogo exibe "Game Over!". Em ambos os casos, o jogador tem a opção de jogar novamente ou sair.
 
 ---
 
-## 6. Arquitetura e Fluxo do Sistema
+## 6. Estrutura de Pastas
 
-A arquitetura do **Block Smasher** está dividida em três módulos principais que garantem a simplicidade e o foco no uso de programação distribuída:
-
-### 6.1. Menu Inicial
-
--   **Objetivo:**  
-    Ao iniciar o jogo, é exibido um menu inicial com uma arte de fundo. Esse menu serve de porta de entrada e aguarda que o usuário clique para iniciar a partida ou outra opção.
-
--   **Funcionalidades:**
-    -   Exibição de uma arte de fundo atrativa.
-    -   Interface com um botão ou área clicável para transição ao estado de jogo ativo.
-
-### 6.2. Game Loop
-
--   **Inicialização (`love.load()`):**  
-    Configura as dimensões da tela e define as propriedades iniciais da bolinha (posição, raio, velocidade, etc.).
-
--   **Ciclo Principal:**
-    -   **`love.update(dt)`:**  
-        Atualiza continuamente a posição da bolinha (ou bolinhas) com base em sua velocidade e tempo delta. Neste ponto também é integrada a lógica de sincronização para garantir que as atualizações sejam distribuídas entre os nós conectados.
-    -   **`love.draw()`:**  
-        Renderiza na tela a bolinha, a barra (controlada pelo jogador) e os blocos, refletindo o estado atualizado da partida.
-
-### 6.3. Módulo Distribuído
-
--   **Objetivo:**  
-    Sincronizar o estado das bolinhas entre processos ou dispositivos, demonstrando os conceitos de paralelismo e comunicação distribuída.
-
--   **Funcionamento:**
-    -   **Envio e Atualização de Dados:**  
-        Quando uma bolinha é lançada ou seu estado é alterado, os dados correspondentes (posição, direção e velocidade) são enviados a um sistema distribuído que os retransmite aos demais nós.
-    -   **Recepção de Dados:**  
-        Cada nó integrante recebe as atualizações e ajusta o estado local das bolinhas, garantindo uma experiência coesa e em tempo real para todos os participantes.
-
-### 6.4. Diagrama Resumido do Fluxo
-
-```
-                           +---------------------+
-                           |    Menu Inicial     |
-                           | (Arte de Fundo e UI)|
-                           +---------------------+
-                                     |
-                            Clique para iniciar
-                                     |
-                                     v
-                           +---------------------+
-                           |   Estado de Jogo    |
-                           |  (Game Loop Ativo)  |
-                           +---------------------+
-                                     |
-                     +---------------+----------------+
-                     |                                |
-               love.load()                      Inicializa variáveis
-                     |                                |
-                     v                                v
-               +------------+                  +-------------+
-               | love.update|<-----------------|Sincronização|-----> Outros processos
-               +------------+                  | Distribuída |
-                     |                         +-------------+
-                     v
-               +------------+
-               | love.draw  |
-               +------------+
-```
-
----
-
-## 7. Estrutura de Pastas
-
-```
+```bash
 Block-Smasher/
-├── docs/
+├── assets/         # Contém imagens, sons e músicas
+├── main.lua        # Contém o código-fonte principal
+├── conf.lua        # Arquivo de configuração do LÖVE
 ├── .gitignore
-├── conf.lua
-├── main.lua
-├── thread.lua
 ├── LICENSE
 └── README.md
-
 ```
 
 ---
 
-## 8. Estrutura do Código
+## 7. Estrutura do Código
 
-Exemplo básico de estrutura das funções principais do LÖVE2D em Lua:
+O jogo é centralizado em um objeto `Game` que funciona como uma máquina de estados, gerenciando as telas de menu, jogo, vitória e derrota.
 
 ```lua
--- Função chamada ao iniciar o jogo
-function love.load()
-    -- Inicialização de variáveis, carregamento de imagens, sons, etc.
-end
+-- Objeto principal que gerencia o estado do jogo
+Game = {
+    state = "menu", -- Estados: "menu", "game"
+    winorlose = nil, -- Telas de vitória (1) ou derrota (0)
 
--- Função chamada a cada frame para atualizar a lógica do jogo
-function love.update(dt)
-    -- Atualização de posições, verificações de colisão, etc.
-end
+    start = function() end,      -- Inicia uma nova partida
+    gameover = function() end,   -- Ativa a tela de derrota
+    victory = function() end,    -- Ativa a tela de vitória
+    menu = function() end        -- Volta para o menu principal
+}
 
--- Função chamada a cada frame para desenhar na tela
-function love.draw()
-    -- Desenho de sprites, textos, formas, etc.
-end
+-- Funções principais do LÖVE
+function love.load() end         -- Carrega assets e inicializa variáveis
+function love.update(dt) end     -- Atualiza a lógica do jogo
+function love.draw() end         -- Desenha os elementos na tela
+function love.mousepressed(x, y, button) end -- Lida com cliques do mouse
 ```
+
+---
+
+## 8. Game Loop
+
+O fluxo do jogo é dividido em estados, garantindo que a lógica e a renderização de cada tela sejam independentes.
+
+-   **`love.load()`**: Carrega todos os recursos e prepara o estado inicial do jogo (menu).
+-   **`love.update(dt)`**: Verifica o estado atual (`Game.state`) e chama a função de atualização correspondente (`UpdateMenu`, `UpdateGame`).
+-   **`love.draw()`**: Com base no estado, desenha a tela apropriada (`DrawMenu`, `DrawGame`) e as telas de vitória/derrota.
 
 ---
 
 ## 9. Apresentações
 
 ### Avaliação N1
-
 -   Linguagem e justificativa da escolha
 -   Overview do projeto
--   Explicação dos requisitos funcionais
--   Detalhamento dos casos de uso
 -   Apresentação dos slides
-    **Data da Apresentação:** 17/04/25
+
+    **Data da Apresentação:** 📅17/04/2025
 
 ### Avaliação N2
-
 -   Andamento do projeto
--   Arquitetura do sistema e desenho do fluxo
--   Apresentação dos slides  
-    **Data da Apresentação:** 15/05/25
+-   Arquitetura do sistema
+-   Apresentação dos slides
+
+    **Data da Apresentação:** 📅15/05/2025
 
 ### Avaliação N3
-
 -   Apresentação Final
-    **Data da Apresentação:** 03/07/25
+
+    **Data da Apresentação:** 📅03/07/2025
