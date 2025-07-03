@@ -256,16 +256,16 @@ end
 -   Explicação dos requisitos funcionais
 -   Detalhamento dos casos de uso
 -   Apresentação dos slides
-    **Data da Apresentação:** 17/04
+    **Data da Apresentação:** 17/04/25
 
 ### Avaliação N2
 
 -   Andamento do projeto
 -   Arquitetura do sistema e desenho do fluxo
 -   Apresentação dos slides  
-    **Data da Apresentação:** 15/05
+    **Data da Apresentação:** 15/05/25
 
 ### Avaliação N3
 
--   (Avaliação a ser definida)  
-    **Data da Apresentação:** (A definir)
+-   Apresentação Final
+    **Data da Apresentação:** 03/07/25
