@@ -5,6 +5,7 @@ Um jogo de quebra-tijolos feito em **Lua** com o framework **LÖVE**.
 **Desenvolvido por:** Gabriel Antônio Maida, Leonardo Peron Krause, Pedro Henrique Sardá, Luis Felipe Barbosa, Bhernardo Ramos Vieira.
 
 **_UNICESUSC - 2025_**
+
 **_Florianópolis, Santa Catarina_**
 
 ---
