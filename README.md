@@ -2,7 +2,9 @@
 
 Um jogo de quebra-tijolos feito em **Lua** com o framework **LÖVE**.
 
-**Desenvolvido por:** Gabriel Antônio Maida, Leonardo Peron Krause, Pedro Henrique Sardá, Luis Felipe Barbosa, Bhernardo Ramos Vieira.
+**Desenvolvido por:** [Gabriel Antônio Maida](https://gabrielmaida.dev)
+
+**Assets por:** [Bhernardo Ramos Vieira](https://www.bhernardo.com)
 
 **_UNICESUSC - 2025_**
 
@@ -158,26 +160,3 @@ O fluxo do jogo é dividido em estados, garantindo que a lógica e a renderizaç
 -   **`love.load()`**: Carrega todos os recursos e prepara o estado inicial do jogo (menu).
 -   **`love.update(dt)`**: Verifica o estado atual (`Game.state`) e chama a função de atualização correspondente (`UpdateMenu`, `UpdateGame`).
 -   **`love.draw()`**: Com base no estado, desenha a tela apropriada (`DrawMenu`, `DrawGame`) e as telas de vitória/derrota.
-
----
-
-## 9. Apresentações
-
-### Avaliação N1
--   Linguagem e justificativa da escolha
--   Overview do projeto
--   Apresentação dos slides
-
-    **Data da Apresentação:** 📅17/04/2025
-
-### Avaliação N2
--   Andamento do projeto
--   Arquitetura do sistema
--   Apresentação dos slides
-
-    **Data da Apresentação:** 📅15/05/2025
-
-### Avaliação N3
--   Apresentação Final
-
-    **Data da Apresentação:** 📅03/07/2025
