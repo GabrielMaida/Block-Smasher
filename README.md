@@ -1,10 +1,10 @@
 # Block Smasher
 
-Um jogo de quebra-tijolos feito em **Lua** com o framework **LÖVE**.
+A brick-breaker game made in **Lua** with the **LÖVE** framework.
 
-**Desenvolvido por:** [Gabriel Antônio Maida](https://gabrielmaida.dev)
+**Developed by:** [Gabriel Antônio Maida](https://github.com/GabrielMaida)
 
-**Assets por:** [Bhernardo Ramos Vieira](https://www.bhernardo.com)
+**Assets by:** [Bhernardo Ramos Vieira](https://github.com/bhernardo17)
 
 **_UNICESUSC - 2025_**
 
@@ -12,115 +12,90 @@ Um jogo de quebra-tijolos feito em **Lua** com o framework **LÖVE**.
 
 ---
 
-## Índice
+## 1. Concept
 
-- [1. Conceito](#1-conceito)
-- [2. Tecnologias](#2-tecnologias)
-- [3. Como Executar](#3-como-executar)
-- [4. Requisitos](#4-requisitos)
-- [5. Casos de Uso](#5-casos-de-uso)
-- [6. Estrutura de Pastas](#6-estrutura-de-pastas)
-- [7. Estrutura do Código](#7-estrutura-do-código)
-- [8. Game Loop](#8-game-loop)
-- [9. Apresentações](#9-apresentações)
+**Block Smasher** is a reimagining of the classic brick-breaker game, developed with a focus on creating a fun and visually pleasing arcade experience. The player controls a paddle at the bottom of the screen to bounce a ball and destroy all the blocks at the top.
 
 ---
 
-## 1. Conceito
+## 2. Technologies
 
-O **Block Smasher** é uma releitura do clássico jogo de quebra-tijolos, desenvolvido com foco em criar uma experiência arcade divertida e visualmente agradável. O jogador controla uma barra na parte inferior da tela para rebater uma bolinha e destruir todos os blocos na parte superior.
-
----
-
-## 2. Tecnologias
-
--   **Linguagem:** [Lua](https://www.lua.org/)
--   **Framework:** [LÖVE](https://love2d.org/)
+-   **Language:** [Lua](https://www.lua.org/)
+-   **Framework:** [LÖVE2D](https://love2d.org/)
 
 ---
 
-## 3. Como Executar
+## 3. How to Run
 
-### Requisitos
+### Requirements
 
--   [LÖVE](https://love2d.org/) (versão 11.5 ou superior)
+-   [LÖVE2D](https://love2d.org/) (version 11.5 or higher)
 -   [Lua](https://www.lua.org/)
 
-### Passos
+### Steps
 
-1.  **Clone o repositório:**
+1.  **Clone the repository:**
     ```bash
     git clone https://github.com/GabrielMaida/Block-Smasher
     cd Block-Smasher
     ```
 
-2.  **Execute o jogo:**
-    Com o LÖVE instalado, basta executar o seguinte comando na raiz do projeto:
+2.  **Run the game:**
+    With LÖVE installed, simply run the following command in the project root:
     ```bash
     love .
     ```
 
 ---
 
-## 4. Requisitos
+## 4. Requirements
 
-Os requisitos do projeto estão divididos em funcionais e não-funcionais, detalhando as principais funcionalidades esperadas do jogo.
+The project requirements are divided into functional and non-functional, detailing the main expected features of the game.
 
-### 4.1 Requisitos Funcionais
+### 4.1 Functional Requirements
 
-1.  **Movimentação da Barra:**
-    Permite que o jogador mova a barra horizontalmente (usando as setas do teclado `←`/`→` ou `A`/`D`) para interceptar a bolinha.
+1.  **Paddle Movement:** Allows the player to move the paddle horizontally (using the keyboard arrows `←`/`→` or `A`/`D`) to intercept the ball.
+2.  **Ball Launch:** After a start timer (3 seconds), the ball is launched at an initial angle, directed towards the blocks.
+3.  **Ball Collision:** The ball must bounce off when colliding with the paddle, walls, or blocks.
+4.  **Block Destruction:** When a ball hits a block, it is destroyed.
+5.  **Win and Loss Conditions:** The game ends and displays a victory message ("Victory!") when all blocks are destroyed, or a game over message ("Game Over!") if the ball passes the paddle.
+6.  **Start Menu:** The game must feature a start menu with interactive buttons ("Start Game", "Exit Game").
 
-2.  **Lançamento da Bolinha:**
-    Após um temporizador de início (3 segundos), a bolinha é lançada em um ângulo inicial, direcionada para os blocos.
+### 4.2 Non-Functional Requirements
 
-3.  **Colisão da Bolinha:**
-    A bolinha deve ricochetear ao colidir com a barra, as paredes ou os blocos.
-
-4.  **Destruição de Blocos:**
-    Quando uma bolinha atinge um bloco, este é destruído.
-
-5.  **Condição de Vitória e Derrota:**
-    O jogo termina e exibe uma mensagem de vitória ("Victory!") quando todos os blocos são destruídos, ou uma mensagem de derrota ("Game Over!") se a bolinha ultrapassar a barra.
-
-6.  **Menu de Início:**
-    O jogo deve apresentar um menu inicial com botões interativos ("Start Game", "Exit Game").
-
-### 4.2 Requisitos Não-Funcionais
-
--   **Desempenho:** O jogo deve rodar de maneira fluida e com tempo de resposta rápido.
--   **Modularidade:** O código deve ser modular para suportar facilmente novas implementações.
--   **Usabilidade:** A interface deve ser simples e intuitiva, com feedback visual e sonoro.
--   **Clareza do Código:** O código deve seguir boas práticas de programação para facilitar a manutenção.
+-   **Performance:** The game must run smoothly with a fast response time.
+-   **Modularity:** The code must be modular to easily support new implementations.
+-   **Usability:** The interface must be simple and intuitive, with visual and auditory feedback.
+-   **Code Clarity:** The code must follow good programming practices to facilitate maintenance.
 
 ---
 
-## 5. Casos de Uso
+## 5. Use Cases
 
-### Caso 1: Movimentação da Barra
+### Case 1: Paddle Movement
 
--   **Ator:** Jogador
--   **Descrição:** O jogador move a barra horizontalmente utilizando as setas do teclado (`←`/`→`) ou as teclas (`A`/`D`) para interceptar a bolinha.
+-   **Actor:** Player
+-   **Description:** The player moves the paddle horizontally using the keyboard arrows (`←`/`→`) or keys (`A`/`D`) to intercept the ball.
 
-### Caso 2: Lançamento da Bolinha
+### Case 2: Ball Launch
 
--   **Ator:** Sistema
--   **Descrição:** Após o temporizador de 3 segundos, a bolinha é automaticamente lançada em um ângulo inicial.
+-   **Actor:** System
+-   **Description:** After the 3-second timer, the ball is automatically launched at an initial angle.
 
-### Caso 3: Vitória/Derrota do Jogador
+### Case 3: Player Victory/Loss
 
--   **Ator:** Jogador
--   **Descrição:** Ao destruir todos os blocos, o jogo exibe uma mensagem de "Victory!". Se a bolinha sair da tela por baixo, o jogo exibe "Game Over!". Em ambos os casos, o jogador tem a opção de jogar novamente ou sair.
+-   **Actor:** Player
+-   **Description:** Upon destroying all blocks, the game displays a "Victory!" message. If the ball goes off the bottom of the screen, the game displays "Game Over!". In both cases, the player has the option to play again or exit.
 
 ---
 
-## 6. Estrutura de Pastas
+## 6. Folder Structure
 
 ```bash
 Block-Smasher/
-├── assets/         # Contém imagens, sons e músicas
-├── main.lua        # Contém o código-fonte principal
-├── conf.lua        # Arquivo de configuração do LÖVE
+├── assets/         # Contains images, sounds, and music
+├── main.lua        # Contains the main source code
+├── conf.lua        # LÖVE configuration file
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -128,35 +103,35 @@ Block-Smasher/
 
 ---
 
-## 7. Estrutura do Código
+## 7. Code Structure
 
-O jogo é centralizado em um objeto `Game` que funciona como uma máquina de estados, gerenciando as telas de menu, jogo, vitória e derrota.
+The game is centered around a `Game` object that functions as a state machine, managing the menu, game, victory, and loss screens.
 
 ```lua
--- Objeto principal que gerencia o estado do jogo
+-- Main object that manages the game state
 Game = {
-    state = "menu", -- Estados: "menu", "game"
-    winorlose = nil, -- Telas de vitória (1) ou derrota (0)
+    state = "menu", -- States: "menu", "game"
+    winorlose = nil, -- Victory (1) or loss (0) screens
 
-    start = function() end,      -- Inicia uma nova partida
-    gameover = function() end,   -- Ativa a tela de derrota
-    victory = function() end,    -- Ativa a tela de vitória
-    menu = function() end        -- Volta para o menu principal
+    start = function() end,      -- Starts a new game
+    gameover = function() end,   -- Activates the game over screen
+    victory = function() end,    -- Activates the victory screen
+    menu = function() end        -- Returns to the main menu
 }
 
--- Funções principais do LÖVE
-function love.load() end         -- Carrega assets e inicializa variáveis
-function love.update(dt) end     -- Atualiza a lógica do jogo
-function love.draw() end         -- Desenha os elementos na tela
-function love.mousepressed(x, y, button) end -- Lida com cliques do mouse
+-- Main LÖVE functions
+function love.load() end         -- Loads assets and initializes variables
+function love.update(dt) end     -- Updates game logic
+function love.draw() end         -- Draws elements on the screen
+function love.mousepressed(x, y, button) end -- Handles mouse clicks
 ```
 
 ---
 
 ## 8. Game Loop
 
-O fluxo do jogo é dividido em estados, garantindo que a lógica e a renderização de cada tela sejam independentes.
+The game flow is divided into states, ensuring that the logic and rendering of each screen are independent.
 
--   **`love.load()`**: Carrega todos os recursos e prepara o estado inicial do jogo (menu).
--   **`love.update(dt)`**: Verifica o estado atual (`Game.state`) e chama a função de atualização correspondente (`UpdateMenu`, `UpdateGame`).
--   **`love.draw()`**: Com base no estado, desenha a tela apropriada (`DrawMenu`, `DrawGame`) e as telas de vitória/derrota.
+-   **`love.load()`**: Loads all resources and prepares the initial game state (menu).
+-   **`love.update(dt)`**: Checks the current state (`Game.state`) and calls the corresponding update function (`UpdateMenu`, `UpdateGame`).
+-   **`love.draw()`**: Based on the state, draws the appropriate screen (`DrawMenu`, `DrawGame`) and the victory/loss screens.
