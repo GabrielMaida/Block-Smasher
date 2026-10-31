@@ -12,82 +12,86 @@ A brick-breaker game made in **Lua** with the **LÖVE** framework.
 
 ---
 
+<br>
+<div align="center" margin="top:10px;">
+    <img src="assets/cover.png" alt="Block Smasher" width="600">
+</div>
+
 ## 1. Concept
 
 **Block Smasher** is a reimagining of the classic brick-breaker game, developed with a focus on creating a fun and visually pleasing arcade experience. The player controls a paddle at the bottom of the screen to bounce a ball and destroy all the blocks at the top.
 
----
-
 ## 2. Technologies
 
--   **Language:** [Lua](https://www.lua.org/)
--   **Framework:** [LÖVE2D](https://love2d.org/)
+- **Language:** [Lua](https://www.lua.org/)
+- **Framework:** [LÖVE2D](https://love2d.org/)
 
----
+## 3. How to Play / Run
 
-## 3. How to Run
+The easiest way to play is directly in your browser! You don't need to install anything:
 
-### Requirements
+[👉 Play Block Smasher on itch.io](https://gabriel-maida.itch.io/block-smasher)
 
--   [LÖVE2D](https://love2d.org/) (version 11.5 or higher)
--   [Lua](https://www.lua.org/)
+### Running Locally
 
-### Steps
+**Requirements:**
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/GabrielMaida/Block-Smasher
-    cd Block-Smasher
-    ```
+- [LÖVE2D](https://love2d.org/) (version 11.5 or higher).
+  > Note:
+  > LÖVE already includes a LuaJIT interpreter, so you don't need to install Lua separately.
 
-2.  **Run the game:**
-    With LÖVE installed, simply run the following command in the project root:
-    ```bash
-    love .
-    ```
+**Steps:**
 
----
+1. **Clone the repository:**
 
-## 4. Requirements
+   ```bash
+   git clone https://github.com/GabrielMaida/Block-Smasher
+   cd Block-Smasher
+   ```
+
+2. **Run the game:**
+   With LÖVE installed, simply run the following command in the project root:
+
+   ```bash
+   love .
+   ```
+
+## 4. Project Requirements
 
 The project requirements are divided into functional and non-functional, detailing the main expected features of the game.
 
 ### 4.1 Functional Requirements
 
-1.  **Paddle Movement:** Allows the player to move the paddle horizontally (using the keyboard arrows `←`/`→` or `A`/`D`) to intercept the ball.
-2.  **Ball Launch:** After a start timer (3 seconds), the ball is launched at an initial angle, directed towards the blocks.
-3.  **Ball Collision:** The ball must bounce off when colliding with the paddle, walls, or blocks.
-4.  **Block Destruction:** When a ball hits a block, it is destroyed.
-5.  **Win and Loss Conditions:** The game ends and displays a victory message ("Victory!") when all blocks are destroyed, or a game over message ("Game Over!") if the ball passes the paddle.
-6.  **Start Menu:** The game must feature a start menu with interactive buttons ("Start Game", "Exit Game").
+1. **Paddle Movement:** Allows the player to move the paddle horizontally (using the keyboard arrows `←`/`→` or `A`/`D`) to intercept the ball.
+2. **Ball Launch:** After a start timer (3 seconds), the ball is launched at an initial angle, directed towards the blocks.
+3. **Ball Collision:** The ball must bounce off when colliding with the paddle, walls, or blocks.
+4. **Block Destruction:** When a ball hits a block, it is destroyed.
+5. **Win and Loss Conditions:** The game ends and displays a victory message ("Victory!") when all blocks are destroyed, or a game over message ("Game Over!") if the ball passes the paddle.
+6. **Start Menu:** The game must feature a start menu with interactive buttons ("Start Game", "Exit Game").
 
 ### 4.2 Non-Functional Requirements
 
--   **Performance:** The game must run smoothly with a fast response time.
--   **Modularity:** The code must be modular to easily support new implementations.
--   **Usability:** The interface must be simple and intuitive, with visual and auditory feedback.
--   **Code Clarity:** The code must follow good programming practices to facilitate maintenance.
-
----
+- **Performance:** The game must run smoothly with a fast response time.
+- **Modularity:** The code must be modular to easily support new implementations.
+- **Usability:** The interface must be simple and intuitive, with visual and auditory feedback.
+- **Code Clarity:** The code must follow good programming practices to facilitate maintenance.
 
 ## 5. Use Cases
 
 ### Case 1: Paddle Movement
 
--   **Actor:** Player
--   **Description:** The player moves the paddle horizontally using the keyboard arrows (`←`/`→`) or keys (`A`/`D`) to intercept the ball.
+- **Actor:** Player
+- **Description:** The player moves the paddle horizontally using the keyboard arrows (`←`/`→`) or keys (`A`/`D`) to intercept the ball.
 
 ### Case 2: Ball Launch
 
--   **Actor:** System
--   **Description:** After the 3-second timer, the ball is automatically launched at an initial angle.
+- **Actor:** System
+- **Description:** After the 3-second timer, the ball is automatically launched at an initial angle.
 
 ### Case 3: Player Victory/Loss
 
--   **Actor:** Player
--   **Description:** Upon destroying all blocks, the game displays a "Victory!" message. If the ball goes off the bottom of the screen, the game displays "Game Over!". In both cases, the player has the option to play again or exit.
-
----
+- **Actor:** Player
+- **Description:** Upon destroying all blocks, the game displays a "Victory!" message. If the ball goes off the bottom of the screen, the game displays "Game Over!". In both cases, the player has the option to play again or exit.
 
 ## 6. Folder Structure
 
@@ -100,8 +104,6 @@ Block-Smasher/
 ├── LICENSE
 └── README.md
 ```
-
----
 
 ## 7. Code Structure
 
@@ -126,12 +128,14 @@ function love.draw() end         -- Draws elements on the screen
 function love.mousepressed(x, y, button) end -- Handles mouse clicks
 ```
 
----
-
 ## 8. Game Loop
 
 The game flow is divided into states, ensuring that the logic and rendering of each screen are independent.
 
--   **`love.load()`**: Loads all resources and prepares the initial game state (menu).
--   **`love.update(dt)`**: Checks the current state (`Game.state`) and calls the corresponding update function (`UpdateMenu`, `UpdateGame`).
--   **`love.draw()`**: Based on the state, draws the appropriate screen (`DrawMenu`, `DrawGame`) and the victory/loss screens.
+- **`love.load()`**: Loads all resources and prepares the initial game state (menu).
+- **`love.update(dt)`**: Checks the current state (`Game.state`) and calls the corresponding update function (`UpdateMenu`, `UpdateGame`).
+- **`love.draw()`**: Based on the state, draws the appropriate screen (`DrawMenu`, `DrawGame`) and the victory/loss screens.
+
+## 9. LICENSE
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
